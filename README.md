@@ -1,5 +1,7 @@
-### Weather fetcher microservice
+# Weather fetcher microservice
 
 
 ### Run
+```
 Make run
+```
