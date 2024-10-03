@@ -2,26 +2,37 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"net/http"
+
+	"github.com/zeze322/weather-fetcher/types"
+)
+
+const (
+	apiKey  = "29ef695437cc4131b78140816240310"
+	baseURL = "http://api.weatherapi.com/v1/current.json?"
 )
 
 type WeatherFetcher interface {
-	FetchWeather(context.Context, string) (float64, error)
+	FetchWeather(context.Context, string) (*types.WeatherResponse, error)
 }
 
 type weatherFetcher struct{}
 
-var weatherMock = map[string]float64{
-	"Moscow":           18.1,
-	"Omsk":             9.0,
-	"Saint-Petersburg": 21.5,
-}
+func (s *weatherFetcher) FetchWeather(ctx context.Context, city string) (*types.WeatherResponse, error) {
+	URL := fmt.Sprintf("%skey=%s&q=%s&aqi=no", baseURL, apiKey, city)
 
-func (s *weatherFetcher) FetchWeather(ctx context.Context, city string) (float64, error) {
-	temp, ok := weatherMock[city]
-	if !ok {
-		return temp, fmt.Errorf("%s doesn't exist", city)
+	resp, err := http.Get(URL)
+	if err != nil {
+		return nil, err
 	}
 
-	return temp, nil
+	weather := new(types.WeatherResponse)
+
+	if err := json.NewDecoder(resp.Body).Decode(weather); err != nil {
+		return nil, err
+	}
+
+	return weather, nil
 }

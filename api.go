@@ -30,22 +30,22 @@ func (s *JSONAPIServer) Run() {
 func (s *JSONAPIServer) handleFetchWeather(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 	city := r.URL.Query().Get("city")
 
-	temp, err := s.svc.FetchWeather(ctx, city)
+	resp, err := s.svc.FetchWeather(ctx, city)
 	if err != nil {
 		return err
 	}
 
-	return writeJSON(w, http.StatusOK, temp)
+	return writeJSON(w, http.StatusOK, resp)
 }
 
 type APIFunc func(context.Context, http.ResponseWriter, *http.Request) error
 
 func makeHTTPHandler(fn APIFunc) http.HandlerFunc {
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, "requestID", uuid.Must(uuid.NewRandom()).String())
 	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.Background()
+		ctx = context.WithValue(ctx, requestIDKey{}, uuid.New().String())
 		if err := fn(ctx, w, r); err != nil {
-			writeJSON(w, http.StatusBadRequest, err.Error())
+			writeJSON(w, http.StatusBadRequest, map[string]any{"error": err.Error()})
 		}
 	}
 }

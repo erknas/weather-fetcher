@@ -1,7 +1,6 @@
 package client
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -13,13 +12,13 @@ type Client struct {
 	endpoint string
 }
 
-func New(endpoint string) *Client {
+func NewClient(endpoint string) *Client {
 	return &Client{
 		endpoint: endpoint,
 	}
 }
 
-func (c *Client) FetchWeather(ctx context.Context, city string) (*types.WeatherResponse, error) {
+func (c *Client) FetchWeather(city string) (*types.WeatherResponse, error) {
 	endpoint := fmt.Sprintf("%s?city=%s", c.endpoint, city)
 
 	req, err := http.NewRequest("GET", endpoint, nil)
@@ -31,11 +30,13 @@ func (c *Client) FetchWeather(ctx context.Context, city string) (*types.WeatherR
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
-	tempResp := new(types.WeatherResponse)
-	if err := json.NewDecoder(resp.Body).Decode(&tempResp.Temp); err != nil {
+	weatherResp := new(types.WeatherResponse)
+
+	if err := json.NewDecoder(resp.Body).Decode(weatherResp); err != nil {
 		return nil, err
 	}
 
-	return tempResp, nil
+	return weatherResp, nil
 }
