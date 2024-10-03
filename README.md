@@ -3,5 +3,5 @@
 
 ### Run
 ```
-Make run
+make run
 ```
