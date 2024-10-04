@@ -1,7 +1,7 @@
-# Weather fetcher microservice
-
+## Weather fetcher
+Microservice with gRPC and JSON transport
 
 ### Run
 ```
-make run
+make run city={city} port={:port}
 ```

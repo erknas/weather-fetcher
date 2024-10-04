@@ -43,7 +43,7 @@ type APIFunc func(context.Context, http.ResponseWriter, *http.Request) error
 func makeHTTPHandler(fn APIFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.Background()
-		ctx = context.WithValue(ctx, requestIDKey{}, uuid.New().String())
+		ctx = context.WithValue(ctx, RequestIDKey{}, uuid.New().String())
 		if err := fn(ctx, w, r); err != nil {
 			writeJSON(w, http.StatusBadRequest, map[string]any{"error": err.Error()})
 		}
@@ -51,8 +51,8 @@ func makeHTTPHandler(fn APIFunc) http.HandlerFunc {
 }
 
 func writeJSON(w http.ResponseWriter, s int, v any) error {
+	w.Header().Add("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(s)
-	w.Header().Set("Content-Type", "application/json")
 
 	return json.NewEncoder(w).Encode(v)
 }

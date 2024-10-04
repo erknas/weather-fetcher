@@ -12,7 +12,7 @@ type logger struct {
 	next WeatherFetcher
 }
 
-type requestIDKey struct{}
+type RequestIDKey struct{}
 
 func NewLogger(next WeatherFetcher) WeatherFetcher {
 	return &logger{
@@ -24,12 +24,12 @@ func (s *logger) FetchWeather(ctx context.Context, city string) (resp *types.Wea
 	defer func(start time.Time) {
 		logrus.WithFields(logrus.Fields{
 			"time":      start,
-			"requestID": ctx.Value(requestIDKey{}),
+			"requestID": ctx.Value(RequestIDKey{}),
 			"took":      time.Since(start),
 			"err":       err,
 			"response":  resp,
 			"city":      city,
-		}).Info("weather fetch")
+		}).Info("fetched weather")
 	}(time.Now())
 
 	return s.next.FetchWeather(ctx, city)

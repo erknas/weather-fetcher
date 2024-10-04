@@ -27,6 +27,7 @@ func (s *weatherFetcher) FetchWeather(ctx context.Context, city string) (*types.
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	weather := new(types.WeatherResponse)
 

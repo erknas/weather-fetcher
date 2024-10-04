@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+option go_package = "github.com/zeze322/weather-fetcher/proto";
+
+service WeatherFetcher {
+	rpc FetchWeather(CityRequest) returns (WeatherResponse);
+}
+
+message CityRequest {
+	string name = 1;
+}
+
+message WeatherResponse {
+	Location location = 1;
+	Current current = 2;
+}
+
+message Location {
+	string name = 1;
+	string region = 2;
+	string country = 3;
+	double latitude = 4;
+	double longitude = 5;
+	string localtime = 6;
+}
+
+message Condition {
+	string name = 1;
+}
+
+message Current {
+	double temperature = 1;
+	double wind = 2;
+	double pressure = 3;
+	double humidity = 4;
+	double feelslike = 5;
+	Condition condition = 6;
+}
