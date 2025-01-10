@@ -37,5 +37,5 @@ func main() {
 		fmt.Printf("%v\n", weather)
 	}()
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(time.Second * 2)
 }

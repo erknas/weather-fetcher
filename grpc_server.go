@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net"
 
 	"github.com/google/uuid"
@@ -28,8 +27,6 @@ func (s *GRPCWeatherFetcherServer) Run() error {
 	if err != nil {
 		return err
 	}
-
-	fmt.Printf("listening port %s\n", s.port)
 
 	opts := []grpc.ServerOption{}
 	server := grpc.NewServer(opts...)

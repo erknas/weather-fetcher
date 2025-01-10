@@ -20,15 +20,15 @@ func NewLogger(next WeatherFetcher) WeatherFetcher {
 	}
 }
 
-func (s *logger) FetchWeather(ctx context.Context, city string) (resp *types.WeatherResponse, err error) {
+func (s *logger) FetchWeather(ctx context.Context, city string) (resp types.WeatherResponse, err error) {
 	defer func(start time.Time) {
 		logrus.WithFields(logrus.Fields{
+			"city":      city,
 			"time":      start,
 			"requestID": ctx.Value(RequestIDKey{}),
 			"took":      time.Since(start),
 			"err":       err,
 			"response":  resp,
-			"city":      city,
 		}).Info("fetched weather")
 	}(time.Now())
 
