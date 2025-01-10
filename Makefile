@@ -2,10 +2,10 @@ city ?=
 port ?= :6000
 
 build:
-	go build -o bin/weatherfetcher
+	@go build -o bin/weatherfetcher
 
 run: build
-	./bin/weatherfetcher -city=$(city) -port=$(port)
+	@./bin/weatherfetcher -city=$(city) -port=$(port)
 
 proto:
 	protoc --go_out=. --go_opt=paths=source_relative \
