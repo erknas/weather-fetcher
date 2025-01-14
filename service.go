@@ -40,13 +40,11 @@ func (s *weatherFetcher) FetchWeather(ctx context.Context, city string) (types.W
 		}
 	}()
 
-	for {
-		select {
-		case <-ctx.Done():
-			return types.WeatherResponse{}, fmt.Errorf("context canceled")
-		case resp := <-respch:
-			return resp.WeatherResponse, resp.err
-		}
+	select {
+	case <-ctx.Done():
+		return types.WeatherResponse{}, fmt.Errorf("context canceled")
+	case resp := <-respch:
+		return resp.WeatherResponse, resp.err
 	}
 }
 

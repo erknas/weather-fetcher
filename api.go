@@ -10,14 +10,16 @@ import (
 )
 
 type JSONAPIServer struct {
-	port string
-	svc  WeatherFetcher
+	port  string
+	svc   WeatherFetcher
+	cache Cacher
 }
 
-func NewJSONAPIServer(port string, svc WeatherFetcher) *JSONAPIServer {
+func NewJSONAPIServer(port string, svc WeatherFetcher, cache Cacher) *JSONAPIServer {
 	return &JSONAPIServer{
-		port: port,
-		svc:  svc,
+		port:  port,
+		svc:   svc,
+		cache: cache,
 	}
 }
 
@@ -30,12 +32,21 @@ func (s *JSONAPIServer) Run() {
 func (s *JSONAPIServer) handleFetchWeather(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 	city := r.URL.Query().Get("city")
 
-	resp, err := s.svc.FetchWeather(ctx, city)
-	if err != nil {
-		return err
+	val, ok := s.cache.Get(ctx, city)
+	if !ok {
+		weather, err := s.svc.FetchWeather(ctx, city)
+		if err != nil {
+			return err
+		}
+
+		if err := s.cache.Set(ctx, city, weather); err != nil {
+			return err
+		}
+
+		return writeJSON(w, http.StatusOK, weather)
 	}
 
-	return writeJSON(w, http.StatusOK, resp)
+	return writeJSON(w, http.StatusOK, val)
 }
 
 type APIFunc func(context.Context, http.ResponseWriter, *http.Request) error
