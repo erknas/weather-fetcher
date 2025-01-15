@@ -9,7 +9,6 @@ import (
 type Cacher interface {
 	Get(context.Context, string) (types.WeatherResponse, bool)
 	Set(context.Context, string, types.WeatherResponse) error
-	Remove(context.Context, string) error
 }
 
 type Cache struct{}
@@ -19,9 +18,5 @@ func (c *Cache) Get(context.Context, string) (types.WeatherResponse, bool) {
 }
 
 func (c *Cache) Set(context.Context, string, types.WeatherResponse) error {
-	return nil
-}
-
-func (c *Cache) Remove(context.Context, string) error {
 	return nil
 }
