@@ -39,7 +39,6 @@ func main() {
 		fmt.Printf("Current weather: %v\n", weather)
 	}()
 
-	// time.Sleep(time.Second * 2)
 	jsonSrv := NewJSONAPIServer(":3000", svc, redisCache)
 	jsonSrv.Run()
 }
