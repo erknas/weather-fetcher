@@ -9,7 +9,7 @@ import (
 	"github.com/zeze322/weather-fetcher/types"
 )
 
-const ttl = time.Minute * 5
+const ttl = time.Minute * 90
 
 type RedisClient struct {
 	client *redis.Client
@@ -43,8 +43,4 @@ func (c *RedisClient) Set(ctx context.Context, key string, val types.WeatherResp
 	}
 
 	return c.client.Set(ctx, key, weather, ttl).Err()
-}
-
-func (c *RedisClient) Remove(ctx context.Context, key string) error {
-	return c.client.Del(ctx, key).Err()
 }
